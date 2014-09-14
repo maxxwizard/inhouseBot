@@ -1,0 +1,10 @@
+{
+  "name": "InhouseBot",
+  "version": "0.0.0",
+  "description": "InhouseBot",
+  "main": "app.js",
+  "author": {
+    "name": "Matthew",
+    "email": ""
+  }
+}
