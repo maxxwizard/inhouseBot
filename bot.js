@@ -57,9 +57,11 @@ function start() {
     
     if (config.debug) {
         // test new game creation functionality
-        // we first resolve the playerObjectId and then call NewGame once that's finished
-        //var playerObjectId = DbClient.GetPlayerObjectIdFromSteam64Id('76561197968837492');
-        var newGame = DbClient.NewGame("76561197968837492");
+        //var newGame = DbClient.NewGame("76561197968837492");
+        
+        // test registration functionality
+        //var success = DbClient.Register("invalidsteamid", "test123");
+        //success = DbClient.Register("76561197968837492", "maxxwizard");
         
         var readline = require('readline');
         var rl = readline.createInterface(process.stdin, process.stdout);

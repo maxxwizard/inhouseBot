@@ -36,6 +36,7 @@ var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
 var config = require('./config.js');
 var trace = require('./trace.js');
+var ranking = require('./ranking.js');
 
 // exporting DbClient as a class. initialize like this:
 // var dbClient = new DataAccess.DbClient();
@@ -46,7 +47,45 @@ module.exports.DbClient = DbClient = function () {
     this.dbName = config.mongo.dbName;
 }
 
-DbClient.prototype.CloseConnection = function () { }
+/*
+ * Description: If user is not already in database, create a record in Players collection.
+ * Return: -1 for failure, 0 for user already exist, 1 for player created
+*/ 
+DbClient.prototype.Register = function (playerSteam64Id, username) {
+    this.MongoClient.connect(format("mongodb://%s:%s/%s", this.host, this.port, this.dbName), function (err, db) {
+        if (err) {
+            trace.error("couldn't connect to database " + this.host + ":" + this.port);
+            return false;
+        } else {
+            // ensure user does not exist
+            trace.debug("Register: finding ObjectId for player " + playerSteam64Id);
+            db.collection("players").findOne({ steam64Id: playerSteam64Id }, { _id: 1 }, function (err, doc) {
+                if (err) {
+                    trace.error("Register: something went wrong during database call");
+                    return false;
+                } else {
+                    // if user already exists
+                    if (doc != null) {
+                        trace.warn("Register: user <" + playerSteam64Id + ", " + username + "> already exists");
+                        return false;
+                    } else {
+                        // create new Player record
+                        db.collection("players").insert({ steam64Id : playerSteam64Id, 'username': username, rating : ranking.InitialRating }, { w: 1 }, function (err, docs) {
+                            if (err) {
+                                trace.error("Register: failed to insert <" + playerSteam64Id + ", " + username + ">");
+                                return false;
+                            } else {
+                                trace.log("Register: new player <" + playerSteam64Id + ", " + username + "> created!");
+                                return true;
+                            }
+                        }); // end player insert call
+                    }
+                }
+            }); // end player find call
+            
+        }
+    }); // end database connect call
+}
 
 /*
  * Description: Returns array of Game objects with status as 'WaitingForPlayers' and 'InProgress'
@@ -57,6 +96,7 @@ DbClient.prototype.GetCurrentGames = function () {
         if (err) {
             trace.warn("couldn't connect to database " + this.host + ":" + this.port);
         } else {
+            
         }
     }); // end database connect call
 }

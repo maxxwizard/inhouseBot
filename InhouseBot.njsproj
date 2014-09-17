@@ -34,6 +34,7 @@
     <Compile Include="bot.js" />
     <Compile Include="dataAccess.js" />
     <Compile Include="databaseCommands.js" />
+    <Compile Include="ranking.js" />
     <Compile Include="trace.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />

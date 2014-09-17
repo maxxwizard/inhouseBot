@@ -20,5 +20,6 @@ module.exports.warn = function (str) {
 }
 
 module.exports.error = function (str) {
-    console.error(str);
+    //console.error(str);
+    console.trace(str);
 }
