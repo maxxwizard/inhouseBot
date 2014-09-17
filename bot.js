@@ -6,6 +6,7 @@
 
 /*
  * Client API
+ * !register - initializes the player in the database
  * !stats <username> - displays win/loss count, winrate and rating for yourself if no username, otherwise displays stats for username
  * !sign <gameNum> - either adds/removes you from a specific game
  * !newGame - starts a new game and outputs the new game number
@@ -30,9 +31,8 @@ function start() {
     var serversFile = 'servers';
     var config = require('./config.js');
     var DataAccess = require('./dataAccess.js');
+    var trace = require('./trace.js');
     var DbClient = new DataAccess.DbClient();
-    var botOffline = true;
-    var testing = true;
     
     // if we've saved a server list, use it
     if (fs.existsSync(serversFile)) {
@@ -43,19 +43,19 @@ function start() {
     var bot = new Steam.SteamClient();
     
     bot.on('error', function (e) {
-        Console.Log(e.cause + ' : ' + e.eresult);
+        trace.error(e.cause + ' : ' + e.eresult);
     });
     
     // log on unless we've set the debug variable
-    if (!botOffline) {
-        console.log('logging on');
+    if (!config.botOffline) {
+        trace.log('bot logging on Steam');
         bot.logOn({
             accountName: config.steam.username,
             password: config.steam.password
         });
     }
     
-    if (testing) {
+    if (config.debug) {
         // test new game creation functionality
         // we first resolve the playerObjectId and then call NewGame once that's finished
         //var playerObjectId = DbClient.GetPlayerObjectIdFromSteam64Id('76561197968837492');
@@ -77,40 +77,38 @@ function start() {
     // listen for friend requests
     bot.on('friend', function (id, relationship) {
         if (relationship == Steam.EFriendRelationship.RequestRecipient) {
-            console.log('got a friend request from ' + id);
+            trace.log('got a friend request from ' + id);
         }
     });
     
     // listen for relationships?
     bot.on('relationships', function () {
-        console.log('received a relationship update');
+        trace.log('received a relationship update');
     });
     
     // Store sentry response
     //bot.on('sentry', function (buffer) {
-    //    console.log('storing Steam Guard sentry hash: ' + buffer);
+    //    trace.debug('storing Steam Guard sentry hash: ' + buffer);
     //    fs.writeFile(sentryFile, buffer);
     //});
     
     bot.on('loggedOn', function () {
-        console.log('Logged in! Our SteamID is: ' + bot.steamID);
+        trace.log('Logged in! Our SteamID is: ' + bot.steamID);
         bot.setPersonaState(Steam.EPersonaState.Online); // to display your bot's status as "Online"
         bot.setPersonaName('InhouseBot'); // to change its nickname
         
         // chill and wait for requests
         bot.joinChat('1035827914360004227'); // http://steamcommunity.com/groups/msft1 [this is currently owned by Nate Watley]
-        console.log("joined default MSFT Steam group");
+        trace.log("joined default MSFT Steam group");
 
-        // initialize dataAccess object
-        //DataAccess.GetHandle();
 
         // attemping to look for 'maxxwizard'
         //DataAccess.GetPlayerDbGuidFromSteam64Id(
 
-    //console.log('adding maxxwizard as friend');
+    //trace.debug('adding maxxwizard as friend');
     //bot.addFriend('76561197968837492');
     
-    //console.log('adding saltydog as friend');
+    //trace.debug('adding saltydog as friend');
     //bot.addFriend('76561198029982751');
     
     });
@@ -120,15 +118,13 @@ function start() {
     });
     
     bot.on('chatInvite', function (chatRoomID, chatRoomName, patronID) {
-        console.log('Got an invite to ' + chatRoomName + ' from ' + bot.users[patronID].playerName);
-        bot.joinChat(chatRoomID); // autojoin on invite
+        trace.log('Got an invite to ' + chatRoomName + ' from ' + bot.users[patronID].playerName);
+        //bot.joinChat(chatRoomID); // autojoin on invite
     });
     
-    bot.on('message', function (source, message, type, chatter)
-    {
- // source contains steam64id
+    bot.on('message', function (source, message, type, chatter) { // source contains steam64id
         // respond to both chat room and private messages
-        console.log('Received message (' + message.length + '): ' + message);
+        trace.debug('Received message (' + message.length + '): ' + message);
         if (message.length >= 4) {
             switch (message) {
                 case 'zhen':
@@ -166,6 +162,6 @@ function start() {
     });
     
     bot.on('announcement', function (group, headline) {
-        console.log('Group with SteamID ' + group + ' has posted ' + headline);
+        trace.log('Group with SteamID ' + group + ' has posted ' + headline);
     });
 }

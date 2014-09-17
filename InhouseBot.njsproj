@@ -32,9 +32,9 @@
   <ItemGroup>
     <Compile Include="app.js" />
     <Compile Include="bot.js" />
-    <Compile Include="config.js" />
     <Compile Include="dataAccess.js" />
-    <Compile Include="usefulCommands.js" />
+    <Compile Include="databaseCommands.js" />
+    <Compile Include="trace.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
   </ItemGroup>

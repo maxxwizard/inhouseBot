@@ -13,5 +13,12 @@ http.createServer(function (req, res) {
 }).listen(port);
  */
 
+/*
+ * Implementation plan/timeline:
+ * 1) create bot functionality
+ * 2) change backing store from localhost to Azure
+ * 3) migrate workload to Azure
+ */
+
 var bot = require("./bot");
 bot.start();

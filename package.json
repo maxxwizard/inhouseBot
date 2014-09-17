@@ -4,7 +4,11 @@
   "description": "InhouseBot",
   "main": "app.js",
   "author": {
-    "name": "Matthew",
-    "email": ""
+    "name": "Matthew Huynh",
+    "email": "matthewhuynh88@gmail.com"
+  },
+  "dependencies": {
+    "mongodb": "^1.4.10",
+    "steam": "^0.6.6"
   }
 }

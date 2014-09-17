@@ -23,10 +23,19 @@
  * 
  */
 
+/* 
+ * Tips: - db.users.update() will always overwrite the document
+ *       - $addToSet - update a field without overwriting
+ *       - $push / $pull - for use against an array
+ *       - $set - to add a field
+ *       - findAndModify is like update, but it also gives the updated document to your callback
+ */
+
 var format = require('util').format;
 var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
 var config = require('./config.js');
+var trace = require('./trace.js');
 
 // exporting DbClient as a class. initialize like this:
 // var dbClient = new DataAccess.DbClient();
@@ -39,7 +48,18 @@ module.exports.DbClient = DbClient = function () {
 
 DbClient.prototype.CloseConnection = function () { }
 
-DbClient.prototype.GetCurrentGames = function () { }
+/*
+ * Description: Returns array of Game objects with status as 'WaitingForPlayers' and 'InProgress'
+ * TO-DO: return games 'Cancelled' in last 15 minutes as well
+*/ 
+DbClient.prototype.GetCurrentGames = function () {
+    this.MongoClient.connect(format("mongodb://%s:%s/%s", this.host, this.port, this.dbName), function (err, db) {
+        if (err) {
+            trace.warn("couldn't connect to database " + this.host + ":" + this.port);
+        } else {
+        }
+    }); // end database connect call
+}
 
 /*
 * Returns the ObjectId of the player based on their Steam64Id. Returns null if error (e.g. not found).
@@ -47,19 +67,19 @@ DbClient.prototype.GetCurrentGames = function () { }
 DbClient.prototype.GetPlayerObjectIdFromSteam64Id = function (playerSteam64Id) {
     this.MongoClient.connect(format("mongodb://%s:%s/%s", this.host, this.port, this.dbName), function (err, db) {
         if (!err) {
-            console.log("finding dbGuid for player " + playerSteam64Id);
+            trace.debug("finding dbGuid for player " + playerSteam64Id);
             db.collection("players").findOne({ steam64Id: playerSteam64Id }, { _id: 1 }, function (err, doc) {
                 if (!err) {
                     var playerObjectId = doc._id;
-                    console.log("returning " + playerObjectId);
+                    trace.debug("returning " + playerObjectId);
                     return playerObjectId;
                 } else {
-                    console.warn("couldn't find player " + playerSteam64Id);
+                    trace.error("couldn't find player " + playerSteam64Id);
                     return null;
                 }
             });
         } else {
-            console.warn("couldn't connect to database " + this.host + ":" + this.port);
+            trace.error("couldn't connect to database " + this.host + ":" + this.port);
             return null;
         }
     });
@@ -72,37 +92,37 @@ DbClient.prototype.GetPlayerObjectIdFromSteam64Id = function (playerSteam64Id) {
 DbClient.prototype.NewGame = function (playerSteam64Id) {
     this.MongoClient.connect(format("mongodb://%s:%s/%s", this.host, this.port, this.dbName), function (err, db) {
         if (err) {
-            console.warn("couldn't connect to database " + this.host + ":" + this.port);
+            trace.error("couldn't connect to database " + this.host + ":" + this.port);
             return;
         } else {
-            console.log("finding ObjectId for player " + playerSteam64Id);
+            trace.debug("finding ObjectId for player " + playerSteam64Id);
             db.collection("players").findOne({ steam64Id: playerSteam64Id }, { _id: 1 }, function (err, doc) {
                 if (err || doc == null) {
-                    console.warn("couldn't find player " + playerSteam64Id);
+                    trace.warn("couldn't find player " + playerSteam64Id);
                 } else {
                     var playerObjectId = doc;
-                    console.log("found ObjectId " + playerObjectId._id + " for playerSteam64Id " + playerSteam64Id);
-                    console.log("finding latest season by ObjectId");
+                    trace.debug("found ObjectId " + playerObjectId._id + " for playerSteam64Id " + playerSteam64Id);
+                    trace.debug("finding latest season by ObjectId");
                     db.collection("seasons").find({}).sort({ _id: -1 }).limit(1).toArray(function (err, docs) {
                         if (err || docs.length == 0) {
-                            console.warn("could not find latest season!");
+                            trace.error("could not find latest season!");
                         } else {
                             var latestSeasonObject = docs[0];
-                            console.log("found ObjectId " + latestSeasonObject._id + " as the latest season");
-                            console.log("finding latest gameNum");
+                            trace.debug("found ObjectId " + latestSeasonObject._id + " as the latest season");
+                            trace.debug("finding latest gameNum");
                             db.collection("games").find({}).sort({ gameNum: -1 }).limit(1).toArray(function (err, docs) {
                                 if (err || docs.length == 0) {
-                                    console.warn("couldn't find latest gameNum");
+                                    trace.error("couldn't find latest gameNum");
                                 } else {
                                     var latestGameObject = docs[0];
-                                    console.log("found latest gameNum: " + latestGameObject.gameNum);
-                                    console.log("inserting new game");
+                                    trace.debug("found latest gameNum: " + latestGameObject.gameNum);
+                                    trace.debug("inserting new game");
                                     var newGameNum = latestGameObject.gameNum + 1;
                                     db.collection("games").insert({ seasonId : latestSeasonObject._id, gameNum: newGameNum, status : 'WaitingForPlayers', players: [playerObjectId._id] }, { w: 1 }, function (err, docs) {
                                         if (err) {
-                                            console.warn("creation of new game failed");
+                                            trace.error("creation of new game failed");
                                         } else {
-                                            console.log("new game #" + newGameNum + " created with ObjectId " + docs[0]._id);
+                                            trace.debug("new game #" + newGameNum + " created with ObjectId " + docs[0]._id);
                                         }
                                     }); // end game insert call
                                 }
