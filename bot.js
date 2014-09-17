@@ -33,6 +33,7 @@ function start() {
     var DataAccess = require('./dataAccess.js');
     var trace = require('./trace.js');
     var DbClient = new DataAccess.DbClient();
+    var botTest = require('./botTest.js');
     
     // if we've saved a server list, use it
     if (fs.existsSync(serversFile)) {
@@ -55,38 +56,9 @@ function start() {
         });
     }
     
+    // if we're in debug mode, run all our tests
     if (config.debug) {
-        // test new game creation functionality
-        //var newGame = DbClient.NewGame("76561197968837492");
-        
-        // test registration functionality
-        //var success = DbClient.Register("invalidsteamid", "test123");
-        //success = DbClient.Register("76561197968837492", "maxxwizard");
-        
-        // test GetCurrentGames functionality
-        /*
-        var docs = DbClient.GetCurrentGames(function (err, games) {
-            if (games.length == 0) {
-                trace.warn("no current games found!");
-            } else {
-                games.forEach(function (game) {
-                    trace.log("Game # " + game.gameNum + " | " + game.status + " | " + game.players.length + " players signed");
-                });
-            }
-        });
-         */
-        
-        var readline = require('readline');
-        var rl = readline.createInterface(process.stdin, process.stdout);
-        //rl.setPrompt('pausing console> ');
-        rl.prompt();
-        rl.on('line', function (line) {
-            if (line === "exit") rl.close();
-            if (line === "quit") rl.close();
-            rl.prompt();
-        }).on('close', function () {
-            process.exit(0);
-        });
+        botTest.TestAllFunctionality(DbClient);
     }
     
     // listen for friend requests

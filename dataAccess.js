@@ -10,7 +10,7 @@
  * constraints: - winner must be string 'Radiant' or 'Dire'
  *  
  * games: { _id : ObjectId("guid"), seasonId : ObjectId("guid"), winner : 'Dire', gameNum: 26, status : 'InProgress',
- *         players: [ObjectId("guid"), ObjectId("guid")], scores: [] }
+ *         players: [ObjectId("guid"), ObjectId("guid")], scores: [], gameCreatorSteam64Id : '76561197968837492' }
  * constraints: - there cannot be more than 10 items in players array
  *              - winner must be string 'Radiant' or 'Dire'
  *              - status must be 'WaitingForPlayers' or 'InProgress' or 'Completed' or 'Cancelled'
@@ -48,13 +48,29 @@ module.exports.DbClient = DbClient = function () {
 }
 
 /*
+ * Description: Cancels the game if the user is the game creator or admin.
+ * Callback params: err - 0 = game canceled, -1 = other failure, 1 = unauthorized
+ * TO-DO: you can cancel the 
+*/ 
+DbClient.prototype.CancelGame = function (playerSteam64Id, gameNum, callback) {
+    this.MongoClient.connect(format("mongodb://%s:%s/%s", this.host, this.port, this.dbName), function (err, db) {
+        if (err) {
+            trace.error("CancelGame: couldn't connect to database " + this.host + ":" + this.port);
+            return false;
+        } else {
+            // check if user is game creator or admin
+        }
+    }); // end database connect call
+}
+
+/*
  * Description: If user is not already in database, create a record in Players collection.
  * Return: true for success, false for failure
 */ 
 DbClient.prototype.Register = function (playerSteam64Id, username) {
     this.MongoClient.connect(format("mongodb://%s:%s/%s", this.host, this.port, this.dbName), function (err, db) {
         if (err) {
-            trace.error("couldn't connect to database " + this.host + ":" + this.port);
+            trace.error("Register: couldn't connect to database " + this.host + ":" + this.port);
             return false;
         } else {
             // ensure user does not exist
@@ -141,11 +157,11 @@ DbClient.prototype.GetPlayerObjectIdFromSteam64Id = function (playerSteam64Id) {
  * Description: Creates a new game in the current/latest season
  * Notes: we first resolve the playerSteam64Id to an ObjectId, latest gameNum, latest season, and then create the new game
  */
-DbClient.prototype.NewGame = function (playerSteam64Id) {
+DbClient.prototype.NewGame = function (playerSteam64Id, callback) {
     this.MongoClient.connect(format("mongodb://%s:%s/%s", this.host, this.port, this.dbName), function (err, db) {
         if (err) {
             trace.error("NewGame: couldn't connect to database " + this.host + ":" + this.port);
-            return;
+            return callback(err);
         } else {
             trace.debug("NewGame: finding ObjectId for player " + playerSteam64Id);
             db.collection("players").findOne({ steam64Id: playerSteam64Id }, { _id: 1 }, function (err, doc) {
@@ -158,23 +174,31 @@ DbClient.prototype.NewGame = function (playerSteam64Id) {
                     db.collection("seasons").find({}).sort({ _id: -1 }).limit(1).toArray(function (err, docs) {
                         if (err || docs.length == 0) {
                             trace.error("NewGame: could not find latest season!");
+                            return callback(err);
                         } else {
                             var latestSeasonObject = docs[0];
                             trace.debug("NewGame: found ObjectId " + latestSeasonObject._id + " as the latest season");
                             trace.debug("NewGame: finding latest gameNum");
-                            db.collection("games").find({}).sort({ gameNum: -1 }).limit(1).toArray(function (err, docs) {
-                                if (err || docs.length == 0) {
-                                    trace.error("NewGame: couldn't find latest gameNum");
+                            db.collection("games").find({seasonId: latestSeasonObject._id}).sort({ gameNum: -1 }).limit(1).toArray(function (err, docs) {
+                                if (err) {
+                                    trace.error("NewGame: couldn't find latest gameNum due to DB error");
+                                    return callback(err);
                                 } else {
+                                    var newGameNum = 1;
+                                    if (docs.length == 0) {
+                                        trace.debug("NewGame: this is the first game of season '" + latestSeasonObject.name + "'");
+                                    } 
                                     var latestGameObject = docs[0];
                                     trace.debug("NewGame: found latest gameNum: " + latestGameObject.gameNum);
                                     trace.debug("NewGame: inserting new game");
-                                    var newGameNum = latestGameObject.gameNum + 1;
+                                    newGameNum = latestGameObject.gameNum + 1;
                                     db.collection("games").insert({ seasonId : latestSeasonObject._id, gameNum: newGameNum, status : 'WaitingForPlayers', players: [playerObjectId._id] }, { w: 1 }, function (err, docs) {
                                         if (err) {
                                             trace.error("NewGame: creation of new game failed");
                                         } else {
-                                            trace.debug("NewGame: new game #" + newGameNum + " created with ObjectId " + docs[0]._id);
+                                            var newGame = docs[0];
+                                            trace.debug("NewGame: new game #" + newGame.gameNum + " created with ObjectId " + newGame._id);
+                                            return callback(err, newGame);
                                         }
                                     }); // end game insert call
                                 }

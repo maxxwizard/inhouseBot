@@ -14,7 +14,7 @@ var randSeasonId = ObjectId();
 db.seasons.insert({ _id: randSeasonId, seasonNum: 1, startDate: Date(2014, 9, 1), endDate: Date(2014, 12, 31), name: 'Season 1' });
 
 var randGameId = ObjectId();
-db.games.insert({ _id: randGameId, seasonId : randSeasonId, winner : '', gameNum: 1, status : 'WaitingForPlayers', players: [randPlayerId, randPlayerId2] });
+db.games.insert({ _id: randGameId, seasonId : randSeasonId, winner : '', gameCreatorSteam64Id: '76561197968837492', gameNum: 1, status : 'WaitingForPlayers', players: [randPlayerId, randPlayerId2] });
 
 // display database
 db.players.find();
