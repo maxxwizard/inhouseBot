@@ -63,6 +63,19 @@ function start() {
         //var success = DbClient.Register("invalidsteamid", "test123");
         //success = DbClient.Register("76561197968837492", "maxxwizard");
         
+        // test GetCurrentGames functionality
+        /*
+        var docs = DbClient.GetCurrentGames(function (err, games) {
+            if (games.length == 0) {
+                trace.warn("no current games found!");
+            } else {
+                games.forEach(function (game) {
+                    trace.log("Game # " + game.gameNum + " | " + game.status + " | " + game.players.length + " players signed");
+                });
+            }
+        });
+         */
+        
         var readline = require('readline');
         var rl = readline.createInterface(process.stdin, process.stdout);
         //rl.setPrompt('pausing console> ');
