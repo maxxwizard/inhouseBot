@@ -20,5 +20,5 @@ http.createServer(function (req, res) {
  * 3) migrate workload to Azure
  */
 
-var bot = require("./bot");
+var bot = require('./lib/bot');
 bot.start();

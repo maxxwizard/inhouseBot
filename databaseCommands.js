@@ -5,6 +5,7 @@
 // "C:\Program Files\MongoDB 2.6 Standard\bin\mongo.exe" inhouseBot
 
 // seed our database with test values
+/*
 var randPlayerId = ObjectId();
 var randPlayerId2 = ObjectId();
 db.players.insert({ _id: randPlayerId, username: 'maxxwizard', rating: 1500, steam64Id: '76561197968837492' });
@@ -25,3 +26,4 @@ db.games.find();
 db.games.remove({});
 db.seasons.remove({});
 db.players.remove({});
+ */

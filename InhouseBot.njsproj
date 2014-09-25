@@ -31,15 +31,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
-    <Compile Include="bot.js" />
-    <Compile Include="botTest.js" />
-    <Compile Include="dataAccess.js" />
+    <Compile Include="lib\bot.js" />
+    <Compile Include="lib\botTest.js" />
+    <Compile Include="lib\dataAccess.js" />
     <Compile Include="databaseCommands.js" />
-    <Compile Include="errorCodes.js" />
-    <Compile Include="ranking.js" />
-    <Compile Include="trace.js" />
+    <Compile Include="lib\errorCodes.js" />
+    <Compile Include="lib\ranking.js" />
+    <Compile Include="lib\trace.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="lib\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
 </Project>
