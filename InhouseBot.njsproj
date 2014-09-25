@@ -35,6 +35,7 @@
     <Compile Include="botTest.js" />
     <Compile Include="dataAccess.js" />
     <Compile Include="databaseCommands.js" />
+    <Compile Include="errorCodes.js" />
     <Compile Include="ranking.js" />
     <Compile Include="trace.js" />
     <Content Include="package.json" />

@@ -15,6 +15,7 @@ var Db = require('mongodb').Db,
     BSON = require('mongodb').pure().BSON,
     assert = require('assert'),
     trace = require('./trace.js'),
+    errCodes = require('./errorCodes.js'),
     config = require('./config');
 
 module.exports.TestAllFunctionality = function (DbClient) {
@@ -53,48 +54,93 @@ module.exports.TestAllFunctionality = function (DbClient) {
                 seasonColl.save({ _id: randSeasonId, seasonNum: 1, startDate: Date(2014, 9, 1), endDate: Date(2014, 12, 31), name: 'Season 1' }, function (err, docs) {
                     assert.equal(null, err);
                     trace.debug("BotTest: season 1 inserted");
+                    var randPlayerId = new ObjectID();
+                    var randPlayerId2 = new ObjectID();
+                    db.collection("players").insert({ _id: randPlayerId, username: 'maxxwizard', rating: 1500, steam64Id: '76561197968837492' }, function (err, docs) {
+                        trace.debug("BotTest: player maxxwizard inserted");
+                        db.collection("players").insert({ _id: randPlayerId2, username: 'saltydog', rating: 1400, steam64Id: '76561198029982751' }, function (err, docs) {
+                            trace.debug("BotTest: player saltydog inserted");
+                            // show zero game scenario, add a game, show 1 game scenario, add 2nd game, show 2 game scenario,
+                            // add 3rd game with duplicate steam64id (should produce failure)
+                            TestGetCurrentGamesFunctionality(function () {
+                                TestNewGameFunctionality("76561197968837492", function () {
+                                    TestGetCurrentGamesFunctionality(function () {
+                                        TestNewGameFunctionality("76561198029982751", function () {
+                                            TestGetCurrentGamesFunctionality(function () { 
+                                                TestNewGameFunctionality("76561198029982751", function () { });
+                                            });
+                                        });
+                                    });
+                                })
+                            });
+                            TestRegisterFunctionality();
+                            
+                        });
+                    });
                 });
             });
-            /*
-            var randPlayerId = new ObjectId();
-            var randPlayerId2 = new ObjectId();
-            db.collection("players").insert({ _id: randPlayerId, username: 'maxxwizard', rating: 1500, steam64Id: '76561197968837492' }, function (err, docs) { });
-             */
+
         }
     }); // end database connect call
     
-    
-    // test new game creation functionality
-    /*
-    DbClient.NewGame("76561197968837492", function (err, newGame) {
-        if (err) {
-            trace.warn("BotTest: game was not created");
-        } else {
-            trace.log("BotTest: new game #" + newGame.gameNum + " created");
-        }
-    });
-     */
-    
-    // test registration functionality
-    //var success = DbClient.Register("invalidsteamid", "test123");
-    //success = DbClient.Register("76561197968837492", "maxxwizard");
-    
-    // test GetCurrentGames functionality
-    /*
-        var docs = DbClient.GetCurrentGames(function (err, games) {
-            if (games.length == 0) {
-                trace.warn("no current games found!");
+    function TestNewGameFunctionality(steam64id, callback) {
+        DbClient.NewGame(steam64id, function (err, newGame) {
+            if (err) {
+                trace.warn("BotTest: game was not created with error code " + err);
+                if (err == errCodes.USER_ALREADY_SIGNED) {
+                    trace.warn("BotTest: user already signed into game #" + newGame.gameNum);
+                }
             } else {
-                games.forEach(function (game) {
-                    trace.log("Game # " + game.gameNum + " | " + game.status + " | " + game.players.length + " players signed");
-                });
+                trace.log("BotTest: new game #" + newGame.gameNum + " created");
+            }
+            if (callback) {
+                callback();
             }
         });
-         */
-
-        // test CancelGame functionality
-
-        
+    }
+    
+    function TestRegisterFunctionality(callback) {
+        // test duplicate record scenario
+        DbClient.Register("76561197968837492", "maxxwizard", function (err) {
+            if (err) {
+                trace.warn("BotTest: registration for maxxwizard failed with error code " + err);
+            } else {
+                trace.log("BotTest: registration for maxxwizard succeeded");
+            }
+            // test new user scenario
+            DbClient.Register("76561198051766196", "gemini", function (err) {
+                if (err) {
+                    trace.warn("BotTest: registration for gemini failed with error code " + err);
+                } else {
+                    trace.log("BotTest: registration for gemini succeeded");
+                }
+                // execute callback
+                if (callback) {
+                    callback();
+                }
+            });
+        });
+    }
+    
+    function TestGetCurrentGamesFunctionality(callback) {
+        DbClient.GetCurrentGames(function (err, games) {
+            if (err) {
+                trace.error("error code " + err);
+            } else {
+                if (games.length == 0) {
+                    trace.warn("BotTest: no current games found!");
+                } else {
+                    games.forEach(function (game) {
+                        trace.log("BotTest: Game # " + game.gameNum + " | " + game.status + " | " + game.players.length + " players signed");
+                    });
+                }
+                if (callback) {
+                    callback();
+                }
+            }
+        });
+    }
+    
     var readline = require('readline');
     var rl = readline.createInterface(process.stdin, process.stdout);
     //rl.setPrompt('pausing console> ');
