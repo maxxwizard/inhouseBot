@@ -3,22 +3,20 @@
  * Description: initializes the inhouse bot.
  */
 
-/*
-var http = require('http');
-var port = process.env.port || 1337;
-http.createServer(function (req, res) {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Bot server is running\n');
-    
-}).listen(port);
- */
+// High priority
+// TODO: implement !reportWin/!reportLoss in dataAccess
+// TODO: implement Client API (message event handler)
+// TODO: implement registration check prior to every database API call
+// TODO: have bot join MS Guild chat
 
-/*
- * Implementation plan/timeline:
- * 1) create bot functionality
- * 2) change backing store from localhost to Azure
- * 3) migrate workload to Azure
- */
+// Normal priority
+// TODO: migrate workload to Azure
+// TODO: change backing store to Azure MongoDB
+
+// Low priority
+// TODO: investigate whether bot can auto-host lobbies
+// TODO: code analysis over entire project to clean up warnings
+// TODO: add JSDoc comments to every method
 
 var bot = require('./lib/bot');
 bot.start();
