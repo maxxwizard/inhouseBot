@@ -1,5 +1,4 @@
 ﻿#InhouseBot
-========
 
 A bot that keeps track of an inhouse Dota 2 league. Responds to commands sent over private and guild messages.
 
