@@ -20,6 +20,7 @@
 // TODO: add JSDoc comments to every method
 // TODO: after registration check, update the player's username if it has changed
 // TODO: display MMR difference between 2 teams
+// TODO: add more test code for DbClient.NewSeason
 
 var bot = require('./lib/bot');
 bot.start();
