@@ -4,8 +4,6 @@
  */
 
 // High priority
-// TODO: change players array inside a game object to format {id: playerObjId, team: 'Radiant'}
-// TODO: implement !reportWin/!reportLoss in dataAccess
 // TODO: implement Client API (message event handler)
 // TODO: implement registration check prior to every database API call
 // TODO: have bot join MS Guild chat
