@@ -4,7 +4,6 @@
  */
 
 // High priority
-// TODO: have bot join MS Guild chat
 // TODO: implement Client API (message event handler)
 // TODO: implement registration check prior to every database API call
 
@@ -21,7 +20,12 @@
 // TODO: display MMR difference between 2 teams
 // TODO: add more test code for DbClient.NewSeason
 // TODO: if friend request from a guild member, auto-add the user
-// TODO: !games should display 'Cancelled' games in last 15 minutes
+// TODO: !games should display 'Cancelled' or 'Completed' games in last 15 minutes
+// TODO: change the DbClient class to use a singleton MongoDb object instead of passing db to every method call
+// TODO: !sign should sign you into the sole game if there is only one
+// TODO: !cancel and !start should start your game if you are the creator
+// TODO: make !newSeason support names with spaces
+// TODO: bug - messageHandler for !games when no seasons exist gives unknown error
 
 var bot = require('./lib/bot');
 bot.start();

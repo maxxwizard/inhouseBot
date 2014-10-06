@@ -24,4 +24,4 @@ A bot that keeps track of an inhouse Dota 2 league. Responds to commands sent ov
 * `!cancel <gameNum>` - only admin or game owner can call this
 
 ###Admin API
-* `!newSeason <name>` - creates a season with the next season number and specified name
+* `!newSeason <name>` - creates a season with the next season number and specified name (no spaces in name allowed currently)
