@@ -11,7 +11,7 @@ A bot that keeps track of an inhouse Dota 2 league. Responds to commands sent ov
 <li>Once the game is finished, run `!reportLoss` or `!reportWin` to report your score. Once 5 reports are submitted, the game's victor will be declared and you can play another game.</li>
 <ol>
 
-###Client API
+##Client API
 * `!help` - links you to our online documentation
 * `!register` - initializes the player in the database
 * `!stats <username>` - displays win/loss count, winrate and rating for yourself if no username, otherwise displays stats for username
@@ -25,5 +25,5 @@ A bot that keeps track of an inhouse Dota 2 league. Responds to commands sent ov
 * `!leaderboard` - displays top 10 rated players and their ratings
 * `!cancel <gameNum>` - only admin or game owner can call this
 
-###Admin API
+##Admin API
 * `!newSeason <name>` - creates a season with the next season number and specified name (no spaces in name allowed currently)
