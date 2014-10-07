@@ -4,6 +4,7 @@
  */
 
 // High priority
+// TODO: implement !unsign in msg handler
 // TODO: implement Client API (message event handler)
 // TODO: implement registration check prior to every database API call
 
