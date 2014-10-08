@@ -9,7 +9,7 @@ A bot that keeps track of an inhouse Dota 2 league. Responds to commands sent ov
 <li>Run `!sign <gameNum>` to sign yourself into a game.</li>
 <li>Once the game is filled, run `!start <gameNum>` to start your game. You'll be prompted to host a lobby and the rest of your game's players should follow you into the lobby.</li>
 <li>Once the game is finished, run `!reportLoss` or `!reportWin` to report your score. Once 5 reports are submitted, the game's victor will be declared and you can play another game.</li>
-<ol>
+</ol>
 
 ##Client API
 * `!help` - links you to our online documentation
