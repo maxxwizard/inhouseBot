@@ -3,13 +3,11 @@
 A bot that keeps track of an inhouse Dota 2 league. Responds to commands sent over private and guild messages.
 
 ##Quick Start Guide
-<ol>
-<li>Run `!register` to register yourself into the system (records your name and gives you initial rating of 1000).</li>
-<li>Run `!games` to find current games. If there are no games, run `!newGame` to host a new game. You'll be auto-signed into it.</li>
-<li>Run `!sign <gameNum>` to sign yourself into a game.</li>
-<li>Once the game is filled, run `!start <gameNum>` to start your game. You'll be prompted to host a lobby and the rest of your game's players should follow you into the lobby.</li>
-<li>Once the game is finished, run `!reportLoss` or `!reportWin` to report your score. Once 5 reports are submitted, the game's victor will be declared and you can play another game.</li>
-</ol>
+1. Run `!register` to register yourself into the system (records your name and gives you initial rating of 1000).
+2. Run `!games` to find current games. If there are no games, run `!newGame` to host a new game. You'll be auto-signed into it.
+3. Run `!sign <gameNum>` to sign yourself into a game.
+4. Once the game is filled, run `!start <gameNum>` to start your game. You'll be prompted to host a lobby and the rest of your game's players should follow you into the lobby.
+5. Once the game is finished, run `!reportLoss` or `!reportWin` to report your score. Once 5 reports are submitted, the game's victor will be declared and you can play another game.
 
 ##Client API
 * `!help` - links you to our online documentation
