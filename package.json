@@ -1,14 +1,16 @@
 {
-  "name": "InhouseBot",
-  "version": "0.0.1",
-  "description": "InhouseBot",
-  "main": "app.js",
-  "author": {
-    "name": "Matthew Huynh",
-    "email": "matthewhuynh88@gmail.com"
-  },
-  "dependencies": {
-    "mongodb": "^1.4.17",
-    "steam": "^0.6.7"
-  }
+    "name": "InhouseBot",
+    "version": "0.0.1",
+    "description": "InhouseBot",
+    "main": "app.js",
+    "author": {
+        "name": "Matthew Huynh",
+        "email": "matthewhuynh88@gmail.com"
+    },
+    "dependencies": {
+        "steam": "*",
+        "mongoose": "*",
+        "sprintf": "*",
+        "dota2": "*"
+    }
 }

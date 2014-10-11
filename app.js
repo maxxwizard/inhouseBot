@@ -3,8 +3,13 @@
  * Description: initializes the inhouse bot.
  */
 
+/*
+ * Plan:
+ * 1) Rewrite data access layer.
+ * 2) Write tests.
+ */
+
 // High priority
-// TODO: implement !unsign in msg handler
 // TODO: Use mongoose for DB modeling
 // TODO: Use Mocha + should + monky to implement tests
 // TODO: implement registration check prior to every database API call
@@ -12,7 +17,7 @@
 
 // Normal priority
 // TODO: migrate workload to Azure
-// TODO: change backing store to Azure MongoDB
+// TODO: change backing store to Azure MongoDB (be sure to update config.prod.js)
 
 // Low priority
 // TODO: investigate whether bot can auto-host lobbies
