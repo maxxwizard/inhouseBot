@@ -7,10 +7,16 @@
         "name": "Matthew Huynh",
         "email": "matthewhuynh88@gmail.com"
     },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/maxxwizard/inhouseBot.git"
+    },
     "dependencies": {
         "steam": "*",
         "mongoose": "*",
         "sprintf": "*",
-        "dota2": "*"
+        "dota2": "*",
+        "mocha": "*",
+        "should": "*"
     }
 }

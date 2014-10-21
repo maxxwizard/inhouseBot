@@ -1,4 +1,4 @@
-var config = {}
+var config = {};
 
 config.creator = {};
 config.creator.name = "Matthew Huynh";
@@ -15,7 +15,7 @@ config.steam = {};
 config.steam.username = 'msftinhouse';
 config.steam.password = 'p9Y7s59fjb9V';
 config.steam.botName = "InhouseBot";
-// list of steam64Ids of admins
+/* list of steam64Ids of admins */
 config.steam.admins = ["76561197968837492", "76561198029982751"];
 config.steam.productionGuild = "Guild_10341";
 config.steam.debugGuild = "Guild_266326";
