@@ -6,12 +6,12 @@
 /*
  * Plan:
  * 1) Rewrite data access layer.
- * 2) Write tests.
+ * 2) Write test.
  */
 
 // High priority
 // TODO: Use mongoose for DB modeling
-// TODO: Use Mocha + should + monky to implement tests
+// TODO: Use Mocha + should + monky to implement test
 // TODO: implement registration check prior to every database API call
 // TODO: change the DbClient class to use a singleton MongoDb object instead of passing db to every method call
 
