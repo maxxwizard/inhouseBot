@@ -6,9 +6,6 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     ObjectId = Schema.Types.ObjectId;
 
-var scoreTeams = ["Radiant", "Dire"];
-var playerTeams = ["Radiant", "Dire", "ToBeDecided"];
-
 /*
  // Score: {_id: ObjectId("guid"), playerId: ObjectId("guid"), winner: 'Radiant'}
  var scoreSchema = new Schema({
@@ -22,12 +19,21 @@ var playerTeams = ["Radiant", "Dire", "ToBeDecided"];
 // players: [playerId: {ObjectId("guid"), team: 'Radiant'}], scores: [{playerId: ObjectId("guid"), winner: 'Radiant'}],
 // gameCreatorId: ObjectId("guid") }
 
-var gameStatuses = ["WaitingForPlayers", "InProgress", "Cancelled", "Completed"];
+var teams = require("../lib/playerTeam");
+var playerTeams = [teams.RADIANT, teams.DIRE, teams.TO_BE_DECIDED];
+var scoreTeams = [teams.RADIANT, teams.DIRE];
+
+var status = require("../lib/gameStatus");
+var gameStatuses = [status.WAITING_FOR_PLAYERS,
+    status.IN_PROGRESS,
+    status.CANCELLED,
+    status.COMPLETED];
 
 var gameSchema = new Schema({
     season: {type: ObjectId, required: true, ref: 'Season'},
     winner: {type: String, enum: scoreTeams},
     gameCreator: {type: ObjectId, required: true, ref: 'Player'},
+    number: {type: Number, min: 1, required: true},
     status: {type: String, required: true, enum: gameStatuses},
     players: {type: [{
         player: {type: ObjectId, required: true, ref: 'Player'},
