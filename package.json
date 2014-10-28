@@ -12,11 +12,19 @@
         "url": "git://github.com/maxxwizard/inhouseBot.git"
     },
     "dependencies": {
-        "steam": "*",
-        "mongoose": "*",
-        "sprintf": "*",
-        "dota2": "*",
-        "mocha": "*",
-        "should": "*"
+        "steam": "0.6.x",
+        "mongoose": "3.8.x",
+        "sprintf": "0.1.x",
+        "dota2": "0.6.x",
+        "node-gyp": "1.0.x",
+        "ursa": "0.8.x"
+    },
+    "devDependencies": {
+        "mocha": "1.21.x",
+        "should": "4.0.x",
+        "monky": "0.6.x"
+    },
+    "scripts": {
+        "test": "mocha"
     }
 }
