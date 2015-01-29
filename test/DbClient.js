@@ -32,6 +32,7 @@ describe("DbClient", function () {
         });
     });
 
+    /*
     after('drop database', function(done) {
         Player.remove({}, function (err) {
             should.equal(err, null);
@@ -44,6 +45,7 @@ describe("DbClient", function () {
             });
         });
     });
+    */
 
     describe("#Register()", function () {
         beforeEach('clear Players table', function(done) {
@@ -153,6 +155,44 @@ describe("DbClient", function () {
                             err.should.equal(errCodes.SUCCESS);
                             savedSeason.name.should.equal(season2.name);
                             savedSeason.number.should.equal(season1.number + 1);
+                            done();
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    describe('#NewGame()', function () {
+        beforeEach('drop the Seasons, Players, Games tables', function (done) {
+            Season.remove({}, function (err) {
+                should.equal(err, null);
+                Game.remove({}, function (err) {
+                    should.equal(err, null);
+                    Player.remove({}, function (err) {
+                        should.equal(err, null);
+                        done();
+                    });
+                });
+            });
+        });
+
+        it("should not allow an unregistered player to create a game", function (done) {
+            monky.build('Game', function (err, game) {
+                DbClient.NewGame('invalid', function (err, savedSeason) {
+                    err.should.equal(errCodes.USER_NOT_REGISTERED);
+                    done();
+                });
+            });
+        });
+
+        it("should allow a registered player to create a game", function (done) {
+            monky.create('Player', {admin: false}, function (err, player) {
+                monky.create('Season', function (err, season) {
+                    monky.build('Game', function (err, game) {
+                        DbClient.NewGame(player.steam64Id, function (err, savedGame) {
+                            err.should.equal(errCodes.SUCCESS);
+                            savedGame.gameNum.should.equal(1);
                             done();
                         });
                     });
